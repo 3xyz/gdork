@@ -1,5 +1,3 @@
-# Test
-site:[TARGET] inurl:acc
 # Login pages
 site:[TARGET] AND (inurl:signin | inurl:signup | inurl:login | inurl:register | intitle:Signup)
 
