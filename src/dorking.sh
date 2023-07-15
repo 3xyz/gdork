@@ -19,6 +19,7 @@ url_encode() {
 }
 
 dork_domain() {
+  dork_count=1
   while read line; do 
     if [[ $line =~ ^#\ .+ ]]; then
       echo_stderr " ${bold}${blue}Dork theme:$n ${line:2}"
@@ -26,15 +27,24 @@ dork_domain() {
     elif [[ $line =~ ^(\ |$)+$ ]]; then
       continue
     elif [[ $line =~ ^.*site.*$ ]]; then
+      if (( $dork_count > 1 )); then
+        sec_to_sleep=$(shuf -i 10-20 -n 1)
+        echo_stderr " ${blue}Starting next dork after${n} ${orange}$sec_to_sleep sec${n}"
+        sleep $sec_to_sleep
+      fi
       google_result=$(run_google_dorks "$line" "$1")
       if [ "$?" -eq '1' ]; then
-       exit 0
+        exit 0
       fi
       if ! [[ -z $google_result ]]; then 
-        echo_stderr "{bold}{green} Result:{n}"
+        echo_stderr "${bold}${green} Result:${n}"
         for url in $google_result; do 
           echo $url
         done
+        echo_stderr ""
+        let dork_count++
+      else
+        echo_stderr "${bold}${green} Nothing there${n}"
         echo_stderr ""
       fi
       continue
@@ -53,8 +63,8 @@ write_to_tmp() {
 }
 
 sleep_for_random_time() {
-  sec_to_sleep=$(shuf -i 8-12 -n 1)
-  info 'sleeping' $sec_to_sleep
+  sec_to_sleep=$(shuf -i 5-7 -n 1)
+  echo_stderr " ${blue}Scrapping page:${n} $1/5 ${orange}(sleep $sec_to_sleep)${n}"
   sleep $sec_to_sleep
 }
 
@@ -93,9 +103,10 @@ run_google_dorks() {
   echo_stderr " ${blue}Running query:${n}\n$dork_query"
   dork_query=$(url_encode "$dork_query")
 	result=""
+  page=0
   for start in $(seq 0 10 40); do # Listing pages 1-5 pages
     if (( $start != 0 )); then
-      sleep_for_random_time
+      sleep_for_random_time $page
     fi
     url="https://www.google.com/search?q=${dork_query}&start=${start}"
     resp_file=$(request_google "$url")
@@ -109,6 +120,7 @@ run_google_dorks() {
     extracted_urls=$(cat "$resp_file" | grep -o -E $extract_regex)
     if ! [ -z "$extracted_urls" ]; then
       result+="$extracted_urls"
+      let page++
     else
       break
     fi

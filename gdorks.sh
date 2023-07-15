@@ -3,34 +3,17 @@
 # Twitter: @71nk3r
 # Github: https://github.com/3xyz
 
-# Relative path to project
-project_path() {
-  SOURCE=${BASH_SOURCE[0]}
-  while [ -L "$SOURCE" ]; do
-    DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
-    SOURCE=$(readlink "$SOURCE")
-    [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
-  done
-  DIR=$( cd -P "$( dirname "$SOURCE" )" > /dev/null 2>&1 && pwd )
-  echo $DIR
-}
-
 # Color tags
 gray='\033[1;30m'
-yellow='\033[0;33m'
 IRed='\033[0;91m'         
 blue='\033[34m'
 cyan='\033[0;36m'
 orange='\e[00;33m'
 red='\033[31m'
+green='\033[0;32m'
 bold='\033[1m'
 n='\033[0m'
 
-user_agents_file="$(project_path)/user-agents.txt"
-google_dorks_file="$(project_path)/google-dorks.txt"
-
-# https://github.com/prxchk/proxy-list/blob/main/all.txt
-proxy_file="$(project_path)/proxy.txt"
 
 init() {
   trap terminate INT   # Handle Ctrl-C
@@ -41,6 +24,13 @@ init() {
   source "$(project_path)/src/dorking.sh"
   source "$(project_path)/src/error.sh"
   source "$(project_path)/config.txt"
+  # Required files
+  user_agents_file="$(project_path)/user-agents.txt"
+  google_dorks_file="$(project_path)/google-dorks.txt"
+  # https://github.com/prxchk/proxy-list/blob/main/all.txt
+  proxy_file="$(project_path)/proxy.txt"
+  # Print header
+  header
 }
 
 main() {
@@ -94,8 +84,18 @@ header() {
   echo_stderr
 }
 
+# Relative path to project
+project_path() {
+  SOURCE=${BASH_SOURCE[0]}
+  while [ -L "$SOURCE" ]; do
+    DIR=$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )
+    SOURCE=$(readlink "$SOURCE")
+    [[ $SOURCE != /* ]] && SOURCE=$DIR/$SOURCE
+  done
+  DIR=$( cd -P "$( dirname "$SOURCE" )" > /dev/null 2>&1 && pwd )
+  echo $DIR
+}
+
 # Start 
 init
-# Print header
-header
 main "$@"

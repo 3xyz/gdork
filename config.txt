@@ -1,1 +1,1 @@
-proxy_on=1
+proxy_on=0
