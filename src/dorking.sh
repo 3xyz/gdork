@@ -19,7 +19,7 @@ url_encode() {
 }
 
 dork_domain() {
-  dork_count=1
+  res_found=0
   while read line; do 
     if [[ $line =~ ^#\ .+ ]]; then
       echo_stderr " ${bold}${blue}Dork theme:$n ${line:2}"
@@ -27,7 +27,7 @@ dork_domain() {
     elif [[ $line =~ ^(\ |$)+$ ]]; then
       continue
     elif [[ $line =~ ^.*site.*$ ]]; then
-      if (( $dork_count > 1 )); then
+      if [[ $dork_count == 1 ]]; then
         sec_to_sleep=$(shuf -i 10-20 -n 1)
         echo_stderr " ${blue}Starting next dork after${n} ${orange}$sec_to_sleep sec${n}"
         sleep $sec_to_sleep
@@ -42,10 +42,11 @@ dork_domain() {
           echo $url
         done
         echo_stderr ""
-        let dork_count++
+        let dork_count=1
       else
         echo_stderr "${bold}${green} Nothing there${n}"
         echo_stderr ""
+        let dork_count=0
       fi
       continue
     fi
