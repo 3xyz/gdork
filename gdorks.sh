@@ -25,10 +25,10 @@ init() {
   source "$(project_path)/src/misc.sh"
   source "$(project_path)/config.txt"
   # Required files
-  user_agents_file="$(project_path)/user-agents.txt"
-  google_dorks_file="$(project_path)/$google_dorks_file"
+  USER_AGENTS_FILE="$(project_path)/user-agents.txt"
+  GOOGLE_DORKING_FILE="$(project_path)/$google_dorks_file"
   # https://github.com/prxchk/proxy-list/blob/main/all.txt
-  proxy_file="$(project_path)/proxy.txt"
+  PROXY_FILE="$(project_path)/proxy.txt"
   # Print header
   header
 }
@@ -39,17 +39,29 @@ main() {
 }
 
 parse_args() {
+  proxy_on=0
+  DOMAIN=''
+  DOMAINS_FILE=''
+  PROXY_FILE=''
   for i in $(seq 1 $#); do
     case ${@:$i:1} in
       -d|--domain)
         DOMAIN="${@:$i+1:1}"
-        dork_domain "$DOMAIN"
         shift
         ;;
       -f|--file)
         DOMAINS_FILE="${@:$i+1:1}"
         check_file "$DOMAINS_FILE"
         dorks_domains_from_file "$DOMAINS_FILE"
+        shift
+        ;;
+      -p|--proxy)
+        PROXY_FILE="${@:$i+1:1}"
+        let proxy_on=1
+        shift
+        ;;
+      -g|--google-dorks-file)
+        GOOGLE_DORKING_FILE="${@:$i+1:1}"
         shift
         ;;
       -h|--help)
@@ -62,6 +74,13 @@ parse_args() {
         ;;
     esac
   done
+  if ! [[ -z $DOMAIN ]]; then 
+    dork_domain "$DOMAIN"
+  fi
+  if ! [[ -z $DOMAINS_FILE ]]; then 
+    check_file "$DOMAINS_FILE"
+    dorks_domains_from_file "$DOMAINS_FILE"
+  fi
 }
 
 # Check for file exists (just example)

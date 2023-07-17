@@ -24,10 +24,11 @@ error() {
 
 help_message() {
   echo -e "${bold}Description:${n}"
-  echo "  Thist tool automate research with google dorks."
+  echo "  Tool which helps automate google dorking."
   echo
   echo -e "${bold}Flags:${n}"
-  echo "  -d, --domain    domain"
-  echo "  -f, --file      file"
+  echo "  -d, --domain    domain (ex. *.hackerone.com)"
+  echo "  -f, --file      domains file (recomended to use proxy)"
+  echo "  -p, --proxy     file with proxy"
   echo "  -h, --help      Show this help"
 }

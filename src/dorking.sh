@@ -44,7 +44,7 @@ dork_domain() {
       fi
       continue
     fi
-  done < "$google_dorks_file"
+  done < "$GOOGLE_DORKING_FILE"
 }
 
 run_google_dorks() {
@@ -99,7 +99,7 @@ request_google() {
     resp=$(curl -sS -A "$user_agent" "$url" -m 6)
     resp_file=$(write_to_tmp "$resp" "google_resp")
     if ! [ -z "$(check_google_ban "$resp_file")" ]; then 
-      error "Google banned your dirty ass. Use proxy!"; exit 1
+      error "Google banned your IP. Use proxy or wait 4-10 mins!"; exit 1
     fi
   fi
   echo "$resp_file"

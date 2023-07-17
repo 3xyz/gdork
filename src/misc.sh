@@ -7,7 +7,7 @@ url_encode() {
 }
 
 get_random_user_agent() {
-  echo $(shuf -n 1 "$user_agents_file")
+  echo $(shuf -n 1 "$USER_AGENTS_FILE")
 }
 
 write_to_tmp() {
