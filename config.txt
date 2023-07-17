@@ -1,1 +1,2 @@
 proxy_on=0
+google_dorks_file=google-dorks.txt

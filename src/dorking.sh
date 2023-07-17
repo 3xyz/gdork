@@ -12,17 +12,11 @@ dorks_domains_from_file() {
   done < "$1"
 }
 
-url_encode() {
-  echo $1 | 
-    sed 's/\ /+/g' | 
-    sed 's/:/%3A/g'
-}
-
 dork_domain() {
   res_found=0
   while read line; do 
     if [[ $line =~ ^#\ .+ ]]; then
-      echo_stderr " ${bold}${blue}Dork theme:$n ${line:2}"
+      echo_stderr " ${bold}${blue}Dorking:$n ${line:2}"
       continue
     elif [[ $line =~ ^(\ |$)+$ ]]; then
       continue
@@ -53,50 +47,6 @@ dork_domain() {
   done < "$google_dorks_file"
 }
 
-get_random_user_agent() {
-  echo $(shuf -n 1 "$user_agents_file")
-}
-
-write_to_tmp() {
-  tmp_file_path="$(project_path)/tmp/$2.txt"
-  echo "$1" > "$tmp_file_path"
-  echo "$tmp_file_path"
-}
-
-sleep_for_random_time() {
-  sec_to_sleep=$(shuf -i 5-7 -n 1)
-  echo_stderr " ${blue}Scrapping page:${n} $1/5 ${orange}(sleep $sec_to_sleep)${n}"
-  sleep $sec_to_sleep
-}
-
-check_google_ban() {
-  cat "$1" | grep -io "https://www.google.com/sorry/index"
-}
-
-# *.google.com -> google\.com
-regex_encode_domain() {
-  local domain=$1
-  if [[ '*' == ${domain::1} ]]; then
-    domain=${domain:1}
-  fi
-  if [[ '.' == ${domain::1} ]]; then
-    domain=${domain:1}
-  fi
-  echo "$domain" | sed 's/\./\\./g'
-}
-
-get_http_proxy() {
-  echo $(shuf -n 1 "$http_proxy")
-}
-
-get_https_proxy() {
-  echo $(shuf -n 1 "$https_proxy")
-}
-
-get_socks4_proxy() {
-  echo $(shuf -n 1 "$socks4_proxy")
-}
-
 run_google_dorks() {
   dork_query="$1"
   domain="$2"
@@ -116,7 +66,7 @@ run_google_dorks() {
     fi
     # echo_stderr $url
     regex_domain=$(regex_encode_domain "$domain")
-    extract_regex="(http|https)://[a-zA-Z\.]*${regex_domain}/[a-zA-Z0-9\(\)./?=_~-]*"
+    extract_regex="(http|https)://[a-zA-Z\.]*${regex_domain}/[a-zA-Z0-9()./?=_~-]*"
     # echo_stderr "$extract_regex"
     extracted_urls=$(cat "$resp_file" | grep -o -E $extract_regex)
     if ! [ -z "$extracted_urls" ]; then
@@ -134,7 +84,7 @@ request_google() {
   local url=$1
   local user_agent=$(get_random_user_agent)
   if [[ $proxy_on == 1 ]]; then
-    resp=$(curl -sS -A "$user_agent" "$url" -m 6 -k --proxytunnel -proxy-insecure --proxy "$(./get_proxy.py)")
+    resp=$(curl -sS -A "$user_agent" "$url" -m 6 -k --proxytunnel -proxy-insecure --proxy "$(get_proxy)")
     if [[ -z $resp ]]; then
       echo_stderr 'Not valid proxy, looking for another'
       request_google $url

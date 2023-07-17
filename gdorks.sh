@@ -14,7 +14,6 @@ green='\033[0;32m'
 bold='\033[1m'
 n='\033[0m'
 
-
 init() {
   trap terminate INT   # Handle Ctrl-C
   trap terminate QUIT  # Handle Ctrl-\\
@@ -23,10 +22,11 @@ init() {
   # Import files
   source "$(project_path)/src/dorking.sh"
   source "$(project_path)/src/error.sh"
+  source "$(project_path)/src/misc.sh"
   source "$(project_path)/config.txt"
   # Required files
   user_agents_file="$(project_path)/user-agents.txt"
-  google_dorks_file="$(project_path)/google-dorks.txt"
+  google_dorks_file="$(project_path)/$google_dorks_file"
   # https://github.com/prxchk/proxy-list/blob/main/all.txt
   proxy_file="$(project_path)/proxy.txt"
   # Print header
