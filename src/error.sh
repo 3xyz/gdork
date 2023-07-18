@@ -10,25 +10,25 @@ echo_stderr() {
 }
 
 info() {
-  echo -e " ${bold}${blue}Info:${n} $@" >&2
+  echo_stderr " ${bold}${blue}Info:${n} $@"
 }
 
 warning() {
-  echo -e " ${bold}${orange}Warning:${n} $@" >&2
+  echo_stderr " ${bold}${orange}Warning:${n} $@"
 }
 
 error() {
-  echo -e " $(random_emoji) ${red}${bold}Error:${n} $@" >&2
+  echo_stderr " $(random_emoji) ${red}${bold}Error:${n} $@"
   exit 1
 }
 
 help_message() {
-  echo -e "${bold}Description:${n}"
-  echo "  Tool which helps automate google dorking."
-  echo
-  echo -e "${bold}Flags:${n}"
-  echo "  -d, --domain    domain (ex. *.hackerone.com)"
-  echo "  -f, --file      domains file (recomended to use proxy)"
-  echo "  -p, --proxy     file with proxy"
-  echo "  -h, --help      Show this help"
+  echo_stderr "${bold}Description:${n}"
+  echo_stderr "  Tool which helps automate google dorking."
+  echo_stderr
+  echo_stderr "${bold}Flags:${n}"
+  echo_stderr "  -d, --domain    domain (ex. *.hackerone.com)"
+  echo_stderr "  -f, --file      domains file (recomended to use proxy)"
+  echo_stderr "  -p, --proxy     file with proxy"
+  echo_stderr "  -h, --help      Show this help"
 }
